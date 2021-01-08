@@ -1,36 +1,11 @@
-const $formAddTask = $('#formAddTask');
-const $modalAddTask = $('#modalAddTask');
+import { addTask,  handleAddFormTask, handleRemoveAll, displayCount} from './functions.js';
+import {$formAddTask, $removeAll} from './constants.js';
 
-const statuses = {
-    'TODO': 1,
-    'IN_PROGRESS': 2,
-    'DONE': 3
-};
 
-$formAddTask.on('submit', function(event) {
-    event.preventDefault();
+$formAddTask.on('submit', handleAddFormTask );
+$removeAll.on('submit', handleRemoveAll);
 
-    const task = {
-        title: $('[name="title"]', this).val(),
-        status: statuses.TODO,
-        id: new Date().getTime()
-    };
 
-    addTask(task);
-
-    localStorage.setItem(task.id, JSON.stringify(task));
-    $modalAddTask.modal('hide');
-    this.reset(); // сбрасывает все значения формы до дефолта
-});
-
-function addTask(_task) {
-
-    $('<li>')
-        .appendTo(`[data-status="${_task.status}"]`)
-        .addClass('list-group-item')
-        .text(_task.title);
-    // $(`[data-status="${task.status}"]`)
-}
 
 for(let key in localStorage) {
     if(localStorage.hasOwnProperty(key)) {
@@ -39,3 +14,5 @@ for(let key in localStorage) {
     }
     
 }
+
+displayCount();
