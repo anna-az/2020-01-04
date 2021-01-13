@@ -4,5 +4,13 @@
 
 .btn-edit {
     margin-right: 5px;
+    margin-left: 10px;
 }
 
+.panel-footer {
+    margin-top: 10px;
+}
+
+li {
+    cursor: pointer;
+}

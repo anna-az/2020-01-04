@@ -4,14 +4,23 @@ import {$modalAddTask, $modalRemoveAll, statuses, $modalEditTask, $formEditTask}
 export function addTask(_task) {
     const $btnDelete = $('<button>').addClass('btn btn-danger btn-xs btn-delete pull-right').html('<i class="glyphicon glyphicon-trash"></i>');
     const $btnEdit = $('<button>').addClass('btn btn-warning btn-xs btn-edit pull-right').html('<i class="glyphicon glyphicon-pencil"></i>');
-    const $moreInfo = $('<div>').addClass('collapse').attr('id', _task.id).text(_task.info);
+    const $moreInfo = $('<div>').addClass('text-muted panel-collapse collapse').attr('id', _task.id);
+    
+    if(_task.info === '') _task.info = 'No description';
+    const $textInfo = $('<div>').html(_task.info.replace(/\n/g, '<br>')).addClass('panel-footer');
+    const $dateInfo = $('<div>').text(_task.date).addClass('text-muted pull-right');
+    
+    $moreInfo.append($textInfo);
+        
+
     $('<li>')
         .appendTo(`[data-status="${_task.status}"]`)
         .addClass('list-group-item')
         .text(_task.title)
         .append($btnDelete)
         .append($btnEdit)
-        .after($moreInfo)
+        .append($dateInfo)
+        .append($moreInfo)
         .attr('data-id', _task.id)
         .attr('data-toggle', 'collapse')
         .attr('data-target', '#' + _task.id);
@@ -24,10 +33,10 @@ export function handleAddFormTask(event) {
         title: $('[name="title"]', this).val(),
         status: statuses.TODO,
         id: new Date().getTime(),
+        date: $('[name="date"]', this).val(),
         info: $('[name="info"]', this).val()
     };
 
-    console.log(task);
     if(task.title === '') {
         alert('Title is required');
         return;
@@ -78,6 +87,7 @@ export function displayCount() {
 
 
 export function hendleBtnDelete(event) {
+
     const $parent = $(this).parents('[data-id]');
     const id = $parent.attr('data-id');
     $(this).parents('[data-id]').remove();
@@ -106,7 +116,9 @@ export function handleFormEditTask(event) {
     const newTask = {
         title: $(this).find('[name="title"]').val(),
         status: +$(this).find('[name="status"]').val(),
-        id: $(this).find('[name="id"]').val()
+        id: $(this).find('[name="id"]').val(),
+        date: $('[name="date"]', this).val(),
+        info: $('[name="info"]', this).val()
     }
     localStorage.setItem(newTask.id, JSON.stringify(newTask));
 

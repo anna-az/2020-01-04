@@ -6,6 +6,7 @@ $formAddTask.on('submit', handleAddFormTask );
 $removeAll.on('submit', handleRemoveAll);
 $formEditTask.on('submit', handleFormEditTask );
 
+
 $('body').on('click', '.btn-delete', hendleBtnDelete);
 $('body').on('click', '.btn-edit', hendleBtnEdit);
 
@@ -20,4 +21,3 @@ for(let key in localStorage) {
 }
 
 displayCount();
-
