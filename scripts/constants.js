@@ -2,6 +2,8 @@ const $formAddTask = $('#formAddTask');
 const $modalAddTask = $('#modalAddTask');
 const $removeAll = $('#removeAll');
 const $modalRemoveAll = $('#modalRemoveAll');
+const $modalEditTask = $('#modalEditTask');
+const $formEditTask = $('#formEditTask');
 
 const statuses = {
     'TODO': 1,
@@ -14,5 +16,7 @@ export {
     $modalAddTask,
     $removeAll,
     $modalRemoveAll,
-    statuses
+    statuses,
+    $modalEditTask,
+    $formEditTask
 }

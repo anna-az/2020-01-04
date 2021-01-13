@@ -1,12 +1,20 @@
-import {$modalAddTask, $modalRemoveAll, statuses} from './constants.js';
+import {$modalAddTask, $modalRemoveAll, statuses, $modalEditTask, $formEditTask} from './constants.js';
 
 
 export function addTask(_task) {
-
+    const $btnDelete = $('<button>').addClass('btn btn-danger btn-xs btn-delete pull-right').html('<i class="glyphicon glyphicon-trash"></i>');
+    const $btnEdit = $('<button>').addClass('btn btn-warning btn-xs btn-edit pull-right').html('<i class="glyphicon glyphicon-pencil"></i>');
+    const $moreInfo = $('<div>').addClass('collapse').attr('id', _task.id).text(_task.info);
     $('<li>')
         .appendTo(`[data-status="${_task.status}"]`)
         .addClass('list-group-item')
-        .text(_task.title);
+        .text(_task.title)
+        .append($btnDelete)
+        .append($btnEdit)
+        .after($moreInfo)
+        .attr('data-id', _task.id)
+        .attr('data-toggle', 'collapse')
+        .attr('data-target', '#' + _task.id);
 }
 
 export function handleAddFormTask(event) {
@@ -15,8 +23,15 @@ export function handleAddFormTask(event) {
     const task = {
         title: $('[name="title"]', this).val(),
         status: statuses.TODO,
-        id: new Date().getTime()
+        id: new Date().getTime(),
+        info: $('[name="info"]', this).val()
     };
+
+    console.log(task);
+    if(task.title === '') {
+        alert('Title is required');
+        return;
+    }
 
     addTask(task);
     localStorage.setItem(task.id, JSON.stringify(task));
@@ -33,7 +48,6 @@ export function removeAll() {
 }
 
 export function handleRemoveAll(event) {
-    console.log(event);
     event.preventDefault();
 
     removeAll();
@@ -62,3 +76,42 @@ export function displayCount() {
     $('#alreadyDone').text(alreadyDone);
 }
 
+
+export function hendleBtnDelete(event) {
+    const $parent = $(this).parents('[data-id]');
+    const id = $parent.attr('data-id');
+    $(this).parents('[data-id]').remove();
+    localStorage.removeItem(id);
+    displayCount();
+}
+
+export function hendleBtnEdit(event) {
+    const $parent = $(this).parents('[data-id]');
+    const id = $parent.attr('data-id');
+    const task = JSON.parse(localStorage.getItem(id));
+    $modalEditTask.modal('show');
+
+    for (let key in task) {
+        const $element = $formEditTask.find(`[name=${key}]`);
+        
+        if (!$element.length) continue;
+
+        $element.val(task[key]);
+    }
+}
+
+export function handleFormEditTask(event) {
+    event.preventDefault();
+
+    const newTask = {
+        title: $(this).find('[name="title"]').val(),
+        status: +$(this).find('[name="status"]').val(),
+        id: $(this).find('[name="id"]').val()
+    }
+    localStorage.setItem(newTask.id, JSON.stringify(newTask));
+
+    $('[data-status]').find(`[data-id = "${newTask.id}"]`).remove();
+    addTask(newTask);
+    $modalEditTask.modal('hide');
+    displayCount();
+}
